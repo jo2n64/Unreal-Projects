@@ -8,3 +8,4 @@ EscapeGame/Content/StarterContent/
 
 #Visual Studio Generated FIles
 *.VC.db
+*.ipch
