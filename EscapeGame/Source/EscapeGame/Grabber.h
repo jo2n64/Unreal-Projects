@@ -2,46 +2,37 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Engine/TriggerVolume.h"
-#include <UObject/ObjectMacros.h>
-#include "OpenDoor.generated.h"
+#include "Components/InputComponent.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "CoreMinimal.h"
+#include "Grabber.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class ESCAPEGAME_API UOpenDoor : public UActorComponent
+class ESCAPEGAME_API UGrabber : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UOpenDoor();
+	UGrabber();
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
 
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	void OpenDoor();
-	void CloseDoor();
+	UPROPERTY(EditAnywhere);
+	float Reach = 100.0f;
 
-	UPROPERTY(EditAnywhere)
-	float OpenAngle = 90.0f;
+	UPhysicsHandleComponent* PhysicsHandle = nullptr;
+	UInputComponent* InputComponent = nullptr;
 
-	UPROPERTY(EditAnywhere)
-	ATriggerVolume* PressurePlate;
-
-	UPROPERTY(EditAnywhere)
-	float DoorCloseDelay = 1.0f;
-	
-	float LastDoorOpenTime;
-
-	AActor* ActorThatOpens;
-	AActor* Owner;
+	void Grab();
+	void Drop();
 };

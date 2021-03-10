@@ -21,7 +21,7 @@ void UPositionReport::BeginPlay()
 	Super::BeginPlay();
 	FString OwnerName = GetOwner()->GetName();
 	FString OwnerPosition = GetOwner()->GetActorTransform().GetLocation().ToString();
-	UE_LOG(LogTemp, Warning, TEXT("Position, kill all non-whites! Owner: %s; Position: %s"), *OwnerName, *OwnerPosition);
+	
 	// ...
 	
 	
