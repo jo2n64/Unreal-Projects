@@ -2,6 +2,7 @@
 
 
 #include "OpenDoor.h"
+#define OUT
 
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
@@ -19,33 +20,42 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 	Owner = GetOwner();
-	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 }
 
 void UOpenDoor::OpenDoor()
 {
-	FRotator NewRotation = FRotator(0.0f, OpenAngle, 0.0f);
-	Owner->SetActorRotation(NewRotation);
+	OnOpen.Broadcast();
 }
 
 void UOpenDoor::CloseDoor()
 {
-	FRotator NewRotation = FRotator(0.0f, 0.0f, 0.0f);
-	Owner->SetActorRotation(NewRotation);
+	OnClose.Broadcast();
 }
 
 // Called every frame
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if (PressurePlate->IsOverlappingActor(ActorThatOpens)) {
+	if (GetTotalMassOfActorsOnPlate() > 10.0f) {
 		OpenDoor();
 		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
 	}
-
-	if (GetWorld()->GetTimeSeconds() >= LastDoorOpenTime + DoorCloseDelay) {
+	else {
 		CloseDoor();
 	}
 
+}
+
+float UOpenDoor::GetTotalMassOfActorsOnPlate() const {
+	float TotalMass = 0.0f;
+	TArray<AActor*> OverlappingActors;
+	PressurePlate->GetOverlappingActors(OUT OverlappingActors);
+	for (const AActor* Actor : OverlappingActors) {
+		UE_LOG(LogTemp, Warning, TEXT("Object hit: %s"), *Actor->GetName());
+		float ActorMass = Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+		TotalMass += ActorMass;
+	}
+	
+	return TotalMass;
 }
 

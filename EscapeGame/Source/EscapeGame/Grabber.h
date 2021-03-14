@@ -35,4 +35,8 @@ private:
 
 	void Grab();
 	void Drop();
+	void FindPhysicsHandleComponent();
+	void FindInputHandleComponent();
+	const FHitResult GetFirstPhysicsBodyInReach();
+	FVector GetForwardReach() const;
 };
